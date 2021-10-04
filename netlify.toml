@@ -1,0 +1,10 @@
+[functions]
+directory = "functions/"
+
+[build]
+command = """
+mkdir functions &&
+cargo build --release --bin opengraph-images &&
+cp target/release/opengraph-images functions/generate
+"""
+publish = "src"
