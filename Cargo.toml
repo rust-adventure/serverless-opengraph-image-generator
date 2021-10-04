@@ -1,0 +1,15 @@
+[package]
+name = "opengraph-images"
+version = "0.1.0"
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+lambda_runtime = "0.4.1"
+serde = "1.0.130"
+serde_json = "1.0.68"
+tokio = "1.12.0"
+og_image_writer = { git = "https://github.com/keiya01/og_image_writer" }
+http = "0.2.5"
+base64 = "0.13.0"
