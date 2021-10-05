@@ -22,8 +22,8 @@ async fn handler(
     event: Value,
     _: Context,
 ) -> Result<Value, Error> {
-    dbg!(&event["queryStringParameters"]["title"]);
-    let encoded_data = gen_image("Rust Adventure Dynamic Image Serverless Function Test")?;
+    let title = &event["queryStringParameters"]["title"].as_str().or(Some("Rust Adventure Dynamic Image Serverless Function Test"));
+    let encoded_data = gen_image(title.unwrap())?;
 
     Ok(json!({
         "headers": {
