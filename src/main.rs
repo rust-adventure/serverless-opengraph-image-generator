@@ -1,4 +1,9 @@
 use http::StatusCode;
+use image::{
+    png::PngEncoder, ColorType, DynamicImage, ImageBuffer,
+    ImageEncoder, ImageFormat, ImageOutputFormat, Pixel,
+    Rgba, RgbaImage,
+};
 use lambda_runtime::{handler_fn, Context, Error};
 use og_image_writer::{style, writer::OGImageWriter};
 use serde_json::{json, Value};
@@ -14,6 +19,20 @@ async fn handler(
     _: Value,
     _: Context,
 ) -> Result<Value, Error> {
+    let encoded_data = gen_image()?;
+
+    Ok(json!({
+        "headers": {
+            "Content-Type": "image/png",
+            "Content-Length": encoded_data.len().to_string()
+        },
+        "statusCode": StatusCode::OK.as_u16(),
+        "body": encoded_data,
+        // "isBase64Encoded": true
+    }))
+}
+
+fn gen_image() -> Result<Vec<u8>, Error> {
     let text = "This is Open Graphic Image Writer for Web Developer.";
 
     let mut writer =
@@ -46,18 +65,39 @@ async fn handler(
         },
         font,
     )?;
-    let data = writer.into_vec()?;
+    writer.paint()?;
 
-    let encoded_data = base64::encode(&data);
-    println!("base64 string: {:?}", encoded_data);
+    let img = writer.image()?;
+    // let data: Vec<u8> = writer.into_vec()?;
+    // let img = image::load_from_memory(&data).unwrap();
+    // let rgba_image: RgbaImage =
+    //     ImageBuffer::from_vec(1024, 512, data).unwrap();
+    // let img = image::load_from_memory(&rgba_image).unwrap();
+    // let img: RgbaImage =
+    //     ImageBuffer::from_vec(1024, 512, data).unwrap();
+    let mut buf = vec![];
+    // let encoder = PngEncoder::new(buf);
+    let dyn_img = DynamicImage::ImageRgba8(img);
+    dyn_img
+        .write_to(&mut buf, ImageOutputFormat::Png)
+        .unwrap();
 
-    Ok(json!({
-        "headers": {
-            "Content-Type": "image/png",
-            "Content-Length": data.len().to_string()
-        },
-        "statusCode": StatusCode::OK.as_u16(),
-        "body": encoded_data,
-        "isBase64Encoded": true
-    }))
+    // encoder.encode(img, 1024, 512, ColorType::Rgba8);
+    // let encoded =
+    //     img.write_image(buf, 1024, 512, ColorType::Rgba8);
+
+    // let encoded_data = base64::encode(&buf);
+    // println!("base64 string: {:?}", encoded_data);
+    Ok(buf)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn generates_image() {
+        let image = gen_image().unwrap();
+        std::fs::write("./test-file.png", image).unwrap()
+    }
 }

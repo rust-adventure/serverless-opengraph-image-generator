@@ -635,7 +635,6 @@ dependencies = [
 [[package]]
 name = "og_image_writer"
 version = "0.2.1"
-source = "git+https://github.com/keiya01/og_image_writer#512dbde2dd843b83f3c8620fb8547e5060bcddee"
 dependencies = [
  "image",
  "imageproc",
@@ -655,6 +654,7 @@ version = "0.1.0"
 dependencies = [
  "base64",
  "http",
+ "image",
  "lambda_runtime",
  "og_image_writer",
  "serde",
