@@ -27,8 +27,8 @@ async fn handler(
             "Content-Length": encoded_data.len().to_string()
         },
         "statusCode": StatusCode::OK.as_u16(),
-        "body": encoded_data,
-        // "isBase64Encoded": true
+        "body": base64::encode(encoded_data),
+        "isBase64Encoded": true
     }))
 }
 
