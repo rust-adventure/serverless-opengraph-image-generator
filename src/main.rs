@@ -22,7 +22,7 @@ async fn handler(
     event: Value,
     _: Context,
 ) -> Result<Value, Error> {
-    dbg!(event);
+    dbg!(&event["queryStringParameters"]["title"]);
     let encoded_data = gen_image("Rust Adventure Dynamic Image Serverless Function Test")?;
 
     Ok(json!({
@@ -57,6 +57,44 @@ fn gen_image(title: &str) -> Result<Vec<u8>, Error> {
         Vec::from(include_bytes!("../FiraMono-Medium.ttf")
             as &[u8]);
 
+    let ferris =
+        Vec::from(include_bytes!("../ferris.png") as &[u8]);
+
+    let mut ferris_container =
+        OGImageWriter::new(style::WindowStyle {
+            width: 100,
+            height: 100,
+            background_color: Some(style::Rgba([
+                223, 246, 245, 255,
+            ])),
+            align_items: style::AlignItems::Start,
+            justify_content: style::JustifyContent::Center,
+            ..style::WindowStyle::default()
+        })?;
+    ferris_container.set_img_with_data(
+        &ferris,
+        100,
+        100,
+        style::Style {
+            margin: style::Margin(0, 0, 0, 0),
+            ..Default::default()
+        },
+    )?;
+    writer.set_container(
+        &mut ferris_container,
+        style::Style {
+            margin: style::Margin(
+                25,
+                0,
+                0,
+                width as i32 - 150,
+            ),
+            text_align: style::TextAlign::Center,
+            position: style::Position::Absolute,
+            ..style::Style::default()
+        },
+    )?;
+
     let mut top_container =
         OGImageWriter::new(style::WindowStyle {
             width,
@@ -76,7 +114,7 @@ fn gen_image(title: &str) -> Result<Vec<u8>, Error> {
             line_height: 1.8,
             font_size: 100.,
             word_break: style::WordBreak::Normal,
-            color: style::Rgba([255, 113, 55, 255]),
+            color: style::Rgba([247, 76, 0, 255]),
             text_align: style::TextAlign::Start,
             ..style::Style::default()
         },
@@ -98,7 +136,7 @@ fn gen_image(title: &str) -> Result<Vec<u8>, Error> {
             width: width - 300,
             height: 50,
             background_color: Some(style::Rgba([
-                255, 113, 55, 255,
+                247, 76, 0, 255,
             ])),
             align_items: style::AlignItems::Start,
             justify_content: style::JustifyContent::Center,
@@ -141,7 +179,8 @@ fn gen_image(title: &str) -> Result<Vec<u8>, Error> {
             width: 300,
             height: 50,
             background_color: Some(style::Rgba([
-                255, 113, 55, 255,
+                247, 76, 0, 255,
+                // 255, 113, 55, 255,
             ])),
             align_items: style::AlignItems::Start,
             justify_content: style::JustifyContent::Center,
@@ -194,7 +233,7 @@ mod tests {
 
     #[tokio::test]
     async fn generates_image() {
-        let image = gen_image().unwrap();
+        let image = gen_image("testing image").unwrap();
         std::fs::write("./test-file.png", image).unwrap()
     }
 }
