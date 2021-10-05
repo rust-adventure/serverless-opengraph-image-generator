@@ -4,7 +4,7 @@ directory = "functions/"
 [build]
 command = """
 mkdir functions &&
-cargo build --release --bin opengraph-images &&
+cargo build --release --target x86_64-unknown-linux-musl --bin opengraph-images &&
 cp target/release/opengraph-images functions/generate
 """
 publish = "src"
