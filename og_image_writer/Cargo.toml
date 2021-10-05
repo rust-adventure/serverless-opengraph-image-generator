@@ -1,0 +1,5 @@
+[workspace]
+members = [
+  "og_image_writer",
+  "examples",
+]
