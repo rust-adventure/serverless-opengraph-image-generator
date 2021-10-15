@@ -4,7 +4,9 @@ directory = "functions/"
 [build]
 command = """
 mkdir functions &&
-cargo build --release --target x86_64-unknown-linux-musl --bin opengraph-images &&
-cp target/x86_64-unknown-linux-musl/release/opengraph-images functions/generate
+cargo build --release --target x86_64-unknown-linux-musl &&
+cp target/x86_64-unknown-linux-musl/release/opengraph-images functions/generate &&
+cp target/x86_64-unknown-linux-musl/release/generic functions/generic &&
+cp target/x86_64-unknown-linux-musl/release/og-test functions/og-test
 """
-publish = "src"
+publish = "www"
