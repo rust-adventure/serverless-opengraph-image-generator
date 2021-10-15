@@ -1,5 +1,7 @@
-use http::StatusCode;
-use aws_lambda_events::event::apigw::{ApiGatewayProxyRequest, ApiGatewayProxyResponse};
+use aws_lambda_events::event::apigw::{
+    ApiGatewayProxyRequest, ApiGatewayProxyResponse,
+};
+use http::{HeaderMap, StatusCode};
 use lambda_runtime::{handler_fn, Context, Error};
 use serde_json::{json, Value};
 
@@ -18,13 +20,17 @@ async fn handler(
     _: Context,
 ) -> Result<ApiGatewayProxyResponse, Error> {
     let title = &event["queryStringParameters"]["title"].as_str().or(Some("Rust Adventure Dynamic Image Serverless Function Test"));
-    let subtitle = &event["queryStringParameters"]["subtitle"].as_str().or(Some("Dynamic OpenGraph Image"));
+    let subtitle = &event["queryStringParameters"]
+        ["subtitle"]
+        .as_str()
+        .or(Some("Dynamic OpenGraph Image"));
 
     let resp = ApiGatewayProxyResponse {
         status_code: 200,
         headers: HeaderMap::new(),
         multi_value_headers: HeaderMap::new(),
-        body: Some(format(r#"<html><head>
+        body: Some(format!(
+            r#"<html><head>
         <meta name="description" content="Rust Adventure" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:creator" content="@chrisbiscardi" />
@@ -49,7 +55,9 @@ async fn handler(
         />
         </head>
         <body></body></html>
-       "#, "some title")),
+       "#,
+            "some title"
+        ).into()),
         is_base64_encoded: Some(false),
     };
     Ok(resp)
