@@ -23,7 +23,12 @@ async fn handler(
     _: Context,
 ) -> Result<Value, Error> {
     let title = &event["queryStringParameters"]["title"].as_str().or(Some("Rust Adventure Dynamic Image Serverless Function Test"));
-    let encoded_data = gen_image(title.unwrap())?;
+    let subtitle = &event["queryStringParameters"]
+        ["subtitle"]
+        .as_str()
+        .or(Some("Dynamic OpenGraph Image"));
+    let encoded_data =
+        gen_image(title.unwrap(), subtitle.unwrap())?;
 
     Ok(json!({
         "headers": {
@@ -36,7 +41,10 @@ async fn handler(
     }))
 }
 
-fn gen_image(title: &str) -> Result<Vec<u8>, Error> {
+fn gen_image(
+    title: &str,
+    subtitle: &str,
+) -> Result<Vec<u8>, Error> {
     let mut writer =
         OGImageWriter::new(style::WindowStyle {
             width,
@@ -144,7 +152,7 @@ fn gen_image(title: &str) -> Result<Vec<u8>, Error> {
         })?;
 
     container.set_text(
-        "Dynamic OpenGraph Image",
+        subtitle,
         style::Style {
             margin: style::Margin(10, 0, 10, 15),
             line_height: 1.5,
@@ -233,7 +241,9 @@ mod tests {
 
     #[tokio::test]
     async fn generates_image() {
-        let image = gen_image("testing image").unwrap();
+        let image =
+            gen_image("testing image", "subtitle here")
+                .unwrap();
         std::fs::write("./test-file.png", image).unwrap()
     }
 }

@@ -38,7 +38,7 @@ async fn handler(
         <meta property="og:description" content="Rust Adventure" />
         <meta
           property="og:image"
-          content="https://rust-opengraph.netlify.app/?{}"
+          content="https://rust-opengraph.netlify.app/generic/?title={}&subtitle={}"
         />
         <meta property="og:image:width" content="1024" />
         <meta property="og:image:height" content="512" />
@@ -56,7 +56,8 @@ async fn handler(
         </head>
         <body></body></html>
        "#,
-            "some title"
+            "some title",
+            "subtitle"
         ).into()),
         is_base64_encoded: Some(false),
     };
