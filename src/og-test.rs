@@ -38,7 +38,7 @@ async fn handler(
         <meta property="og:description" content="Rust Adventure" />
         <meta
           property="og:image"
-          content="https://rust-opengraph.netlify.app/generic/?title={}&subtitle={}"
+          content="https://rust-opengraph.netlify.app/.netlify/functions/generic/?title={}&subtitle={}"
         />
         <meta property="og:image:width" content="1024" />
         <meta property="og:image:height" content="512" />
